@@ -5,15 +5,29 @@ import {
   View,
   TextInput,
   Button,
-  Pressable
+  Pressable,
+  SafeAreaView,
+  useWindowDimensions
 } from "react-native";
+import { Image } from "expo-image";
+
 import { useState } from "react";
 export default function App() {
+  const { height, width } = useWindowDimensions();
+  console.log(`width: ${width}, height: ${height}`);
+  const isLandscape = width > height;
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const movieImage = require("./assets/pulp_fiction.jpg");
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
+    <SafeAreaView
+      style={isLandscape ? styles.containerLandscape : styles.container}
+      onLayout={(e) => {
+        console.log(e.nativeEvent.layout);
+      }}
+    >
+      <StatusBar style="auto" hidden />
+
       <Text>Login</Text>
       <TextInput
         placeholder="User name"
@@ -21,6 +35,8 @@ export default function App() {
           setName(text);
         }}
         value={name}
+        style={styles.input}
+        maxLength={20}
       />
       <TextInput
         placeholder="password"
@@ -29,6 +45,8 @@ export default function App() {
         }}
         value={password}
         secureTextEntry
+        style={styles.input}
+        maxLength={20}
       />
       {/* <Button
         onPress={() => {
@@ -47,7 +65,8 @@ export default function App() {
           <Text style={{ color: "white" }}>Login</Text>
         </View>
       </Pressable>
-    </View>
+      <Image source={movieImage} style={{ width: width, height: height }} />
+    </SafeAreaView>
   );
 }
 
@@ -56,7 +75,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "flex-start",
+    width: "100%"
+  },
+  containerLandscape: {
+    flex: 1,
+    backgroundColor: "#0ff",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%"
+  },
+  input: {
+    width: 200,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    margin: 10,
+    borderRadius: 4,
+    padding: 10
   },
   button: {
     justifyContent: "center",
